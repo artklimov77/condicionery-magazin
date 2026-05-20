@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import FilterSidebar from '@/components/catalog/FilterSidebar'
 import ProductCard from '@/components/catalog/ProductCard'
+import SortSelect from '@/components/catalog/SortSelect'
 import type { Category, Product } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -46,13 +47,6 @@ async function getCategories(): Promise<Category[]> {
     return []
   }
 }
-
-const sortOptions = [
-  { value: 'price_asc', label: 'Цена: сначала дешевле' },
-  { value: 'price_desc', label: 'Цена: сначала дороже' },
-  { value: 'power', label: 'По мощности' },
-  { value: 'new', label: 'Сначала новинки' },
-]
 
 export default async function CatalogPage({ searchParams }: PageProps) {
   const filters = await searchParams
@@ -107,23 +101,3 @@ export default async function CatalogPage({ searchParams }: PageProps) {
   )
 }
 
-function SortSelect({ current }: { current?: string }) {
-  return (
-    <form>
-      <select
-        name="sort"
-        defaultValue={current ?? 'price_asc'}
-        onChange={(e) => {
-          const url = new URL(window.location.href)
-          url.searchParams.set('sort', e.target.value)
-          window.location.href = url.toString()
-        }}
-        className="text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-600 focus:outline-none focus:ring-2 focus:ring-brand-500"
-      >
-        {sortOptions.map((o) => (
-          <option key={o.value} value={o.value}>{o.label}</option>
-        ))}
-      </select>
-    </form>
-  )
-}
