@@ -47,8 +47,7 @@ export default async function FeaturedProducts() {
           </div>
         ) : (
           <div className="text-center py-12 text-slate-400">
-            <p>Товары загружаются из базы данных...</p>
-            <p className="text-sm mt-1">Подключите Supabase в .env.local</p>
+            <p>Каталог скоро пополнится</p>
           </div>
         )}
 

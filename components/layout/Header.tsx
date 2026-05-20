@@ -21,10 +21,11 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-xl text-brand-900">
-            <svg className="w-7 h-7 text-brand-600" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M17 8C8 10 5.9 16.17 3.82 19.5L5.71 21l1-1.5A4.49 4.49 0 008 20c4 0 4-2 8-2s4 2 8 2v-2c-4 0-4-2-8-2c-.93 0-1.72.07-2.44.18C14.5 12.61 15.9 10 17 8z"/>
+            <svg className="w-7 h-7 text-brand-600" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" viewBox="0 0 24 24">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
             </svg>
-            КлиматМаркет
+            Nordic Air
           </Link>
 
           {/* Desktop nav */}

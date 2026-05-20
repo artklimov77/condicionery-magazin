@@ -60,7 +60,7 @@ export default async function CatalogPage({ searchParams }: PageProps) {
         <p className="text-slate-500">{products.length} моделей</p>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar */}
         <Suspense fallback={null}>
           <FilterSidebar categories={categories} />

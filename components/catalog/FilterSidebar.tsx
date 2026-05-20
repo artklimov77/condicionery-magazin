@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import type { Category } from '@/lib/types'
 
 interface Props {
@@ -26,6 +26,7 @@ export default function FilterSidebar({ categories }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const params = useSearchParams()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   const update = useCallback((key: string, value: string | null) => {
     const next = new URLSearchParams(params.toString())
@@ -39,123 +40,156 @@ export default function FilterSidebar({ categories }: Props) {
   }, [params, pathname, router])
 
   const active = (key: string, val: string) => params.get(key) === val
+  const activeCount = params.size
+
+  const content = (
+    <div className="flex flex-col gap-6">
+      {/* Category */}
+      <div>
+        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Тип</h3>
+        <div className="flex flex-col gap-1">
+          {categories.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => update('category', c.slug)}
+              className={`text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                active('category', c.slug)
+                  ? 'bg-brand-600 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Brand */}
+      <div>
+        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Бренд</h3>
+        <div className="flex flex-wrap gap-1.5">
+          {brands.map((b) => (
+            <button
+              key={b}
+              onClick={() => update('brand', b)}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
+                active('brand', b)
+                  ? 'bg-brand-600 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              {b}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Area */}
+      <div>
+        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Площадь помещения</h3>
+        <div className="flex flex-col gap-1">
+          {areas.map((a) => (
+            <button
+              key={a.value}
+              onClick={() => update('area', a.value)}
+              className={`text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                active('area', a.value)
+                  ? 'bg-brand-600 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              {a.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Price */}
+      <div>
+        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Цена оборудования</h3>
+        <div className="flex flex-col gap-1">
+          {priceRanges.map((p) => (
+            <button
+              key={p.max ?? p.min}
+              onClick={() => update('price_max', p.max ?? null)}
+              className={`text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                active('price_max', p.max ?? '')
+                  ? 'bg-brand-600 text-white font-medium'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Features */}
+      <div>
+        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Функции</h3>
+        <div className="flex flex-col gap-2">
+          {[
+            { key: 'inverter', label: 'Инверторный' },
+            { key: 'wifi', label: 'Wi-Fi управление' },
+            { key: 'heating', label: 'Режим обогрева' },
+          ].map((f) => (
+            <label key={f.key} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={params.has(f.key)}
+                onChange={() => update(f.key, params.has(f.key) ? null : '1')}
+                className="w-4 h-4 rounded border-slate-300 text-brand-600 cursor-pointer"
+              />
+              <span className="text-sm text-slate-600">{f.label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Reset */}
+      {activeCount > 0 && (
+        <button
+          onClick={() => router.push(pathname)}
+          className="w-full py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+        >
+          Сбросить фильтры
+        </button>
+      )}
+    </div>
+  )
 
   return (
     <aside className="w-full lg:w-64 flex-shrink-0">
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sticky top-20">
+      {/* Mobile toggle */}
+      <button
+        className="lg:hidden w-full flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-slate-200 shadow-sm mb-2 text-sm font-semibold text-slate-700"
+        onClick={() => setMobileOpen(!mobileOpen)}
+      >
+        <span className="flex items-center gap-2">
+          <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 010 2H4a1 1 0 01-1-1zM6 12a1 1 0 011-1h10a1 1 0 010 2H7a1 1 0 01-1-1zM10 19a1 1 0 011-1h4a1 1 0 010 2h-4a1 1 0 01-1-1z" />
+          </svg>
+          Фильтры{activeCount > 0 && <span className="ml-1 px-1.5 py-0.5 rounded-full bg-brand-600 text-white text-xs">{activeCount}</span>}
+        </span>
+        <svg
+          className={`w-4 h-4 text-slate-400 transition-transform ${mobileOpen ? 'rotate-180' : ''}`}
+          fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {/* Mobile expanded */}
+      {mobileOpen && (
+        <div className="lg:hidden bg-white rounded-xl border border-slate-100 shadow-sm p-5 mb-4">
+          {content}
+        </div>
+      )}
+
+      {/* Desktop always visible */}
+      <div className="hidden lg:block bg-white rounded-2xl border border-slate-100 shadow-sm p-5 sticky top-20">
         <h2 className="font-semibold text-slate-900 mb-5">Фильтры</h2>
-
-        {/* Category */}
-        <div className="mb-6">
-          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Тип</h3>
-          <div className="flex flex-col gap-1">
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => update('category', c.slug)}
-                className={`text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  active('category', c.slug)
-                    ? 'bg-brand-600 text-white font-medium'
-                    : 'text-slate-600 hover:bg-slate-50'
-                }`}
-              >
-                {c.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Brand */}
-        <div className="mb-6">
-          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Бренд</h3>
-          <div className="flex flex-wrap gap-1.5">
-            {brands.map((b) => (
-              <button
-                key={b}
-                onClick={() => update('brand', b)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
-                  active('brand', b)
-                    ? 'bg-brand-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {b}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Area */}
-        <div className="mb-6">
-          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Площадь помещения</h3>
-          <div className="flex flex-col gap-1">
-            {areas.map((a) => (
-              <button
-                key={a.value}
-                onClick={() => update('area', a.value)}
-                className={`text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  active('area', a.value)
-                    ? 'bg-brand-600 text-white font-medium'
-                    : 'text-slate-600 hover:bg-slate-50'
-                }`}
-              >
-                {a.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Price */}
-        <div className="mb-6">
-          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Цена оборудования</h3>
-          <div className="flex flex-col gap-1">
-            {priceRanges.map((p) => (
-              <button
-                key={p.max ?? p.min}
-                onClick={() => update('price_max', p.max ?? null)}
-                className={`text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  active('price_max', p.max ?? '')
-                    ? 'bg-brand-600 text-white font-medium'
-                    : 'text-slate-600 hover:bg-slate-50'
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Features */}
-        <div>
-          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Функции</h3>
-          <div className="flex flex-col gap-2">
-            {[
-              { key: 'inverter', label: 'Инверторный' },
-              { key: 'wifi', label: 'Wi-Fi управление' },
-              { key: 'heating', label: 'Режим обогрева' },
-            ].map((f) => (
-              <label key={f.key} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={params.has(f.key)}
-                  onChange={() => update(f.key, params.has(f.key) ? null : '1')}
-                  className="w-4 h-4 rounded border-slate-300 text-brand-600 cursor-pointer"
-                />
-                <span className="text-sm text-slate-600">{f.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Reset */}
-        {params.size > 0 && (
-          <button
-            onClick={() => router.push(pathname)}
-            className="mt-5 w-full py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
-          >
-            Сбросить фильтры
-          </button>
-        )}
+        {content}
       </div>
     </aside>
   )

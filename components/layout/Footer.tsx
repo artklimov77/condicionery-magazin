@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="text-white font-bold text-lg mb-3">КлиматМаркет</div>
+            <div className="text-white font-bold text-lg mb-3">Nordic Air</div>
             <p className="text-sm leading-relaxed">
               Кондиционеры от крупных поставщиков. Подбор, заказ, доставка и монтаж под ключ.
             </p>
@@ -64,7 +64,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-slate-700 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <span>© {new Date().getFullYear()} КлиматМаркет. Все права защищены.</span>
+          <span>© {new Date().getFullYear()} Nordic Air. Все права защищены.</span>
           <span>Работаем с крупнейшими поставщиками климатической техники</span>
         </div>
       </div>

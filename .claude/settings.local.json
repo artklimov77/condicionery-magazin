@@ -1,7 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes)"
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\" --yes)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(node -e \"const lock = require\\('./package-lock.json'\\); console.log\\('supabase:', !!lock.packages['node_modules/@supabase/supabase-js']\\); console.log\\('resend:', !!lock.packages['node_modules/resend']\\);\")",
+      "Bash(grep -rn \"emoji\\\\|[🌟❄️✅🔥💨🏠📞📧🚚⭐️🎯💡🔧]\" app/ components/ --include=\"*.tsx\" -l)",
+      "Bash(grep -rn \"emoji\\\\|[\\\\x{1F300}-\\\\x{1FFFF}]\" app/ components/ --include=\"*.tsx\" -l)",
+      "Bash(Get-ChildItem -Recurse app,components -Include \"*.tsx\")",
+      "Bash(Select-String -Pattern \"[\\\\u{1F300}-\\\\u{1FFFF}\\\\u{2600}-\\\\u{27BF}]\")",
+      "Bash(Select-Object -ExpandProperty Path)",
+      "Bash(Sort-Object -Unique)"
     ]
   }
 }
