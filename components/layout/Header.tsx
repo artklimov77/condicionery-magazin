@@ -13,10 +13,11 @@ const nav = [
 ]
 
 const categories = [
-  { label: 'Кондиционеры', href: '/catalog?product_type=%D0%BA%D0%BE%D0%BD%D0%B4%D0%B8%D1%86%D0%B8%D0%BE%D0%BD%D0%B5%D1%80' },
+  { label: 'Кондиционеры', href: '/catalog?category=bytovye-konditsionery' },
   { label: 'Мультисплит', href: '/catalog?category=multisplit-sistemy' },
   { label: 'Вентиляция', href: '/catalog?category=ventilyaciya' },
   { label: 'VRF системы', href: '/catalog?category=vrf-sistemy' },
+  { label: 'Тепловые насосы', href: '/catalog?category=teplovye-nasosy' },
   { label: 'Чиллеры', href: '/catalog?category=chillery' },
   { label: 'Фанкойлы', href: '/catalog?category=fankoyly' },
 ]

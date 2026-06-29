@@ -4,26 +4,29 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
 const tabs = [
-  { label: 'Все', type: '' },
-  { label: 'Кондиционеры', type: 'Бытовые кондиционеры' },
-  { label: 'Мультисплит', type: 'Мультисплит-системы' },
-  { label: 'VRF', type: 'VRF-системы' },
-  { label: 'Полупромышленные', type: 'Полупромышленные' },
-  { label: 'Чиллеры', type: 'Чиллеры' },
-  { label: 'Фанкойлы', type: 'Фанкойлы' },
-  { label: 'Вентиляция', type: 'Вентиляция' },
+  { label: 'Все', slug: '' },
+  { label: 'Кондиционеры', slug: 'bytovye-konditsionery' },
+  { label: 'Мультисплит', slug: 'multisplit-sistemy' },
+  { label: 'VRF системы', slug: 'vrf-sistemy' },
+  { label: 'Полупромышленные', slug: 'polupromyshlennye-konditsionery' },
+  { label: 'Тепловые насосы', slug: 'teplovye-nasosy' },
+  { label: 'Чиллеры', slug: 'chillery' },
+  { label: 'Фанкойлы', slug: 'fankoyly' },
+  { label: 'Вентиляция', slug: 'ventilyaciya' },
+  { label: 'Мобильные', slug: 'mobilnye-konditsionery' },
 ]
 
 export default function CatalogTypeTabs() {
   const params = useSearchParams()
-  const current = params.get('product_type') ?? ''
+  const current = params.get('category') ?? ''
 
-  const buildHref = (type: string) => {
+  const buildHref = (slug: string) => {
     const next = new URLSearchParams(params.toString())
-    if (type) {
-      next.set('product_type', type)
+    next.delete('product_type')
+    if (slug) {
+      next.set('category', slug)
     } else {
-      next.delete('product_type')
+      next.delete('category')
     }
     next.delete('page')
     const qs = next.toString()
@@ -33,11 +36,11 @@ export default function CatalogTypeTabs() {
   return (
     <div className="flex overflow-x-auto gap-2 pb-1 -mx-1 px-1 scrollbar-none">
       {tabs.map((tab) => {
-        const active = current === tab.type
+        const active = current === tab.slug
         return (
           <Link
             key={tab.label}
-            href={buildHref(tab.type)}
+            href={buildHref(tab.slug)}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
               active
                 ? 'bg-brand-600 text-white'
