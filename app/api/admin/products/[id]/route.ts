@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServiceClient } from '@/lib/supabase'
+import { db } from '@/lib/db'
 
 interface Ctx {
   params: Promise<{ id: string }>
@@ -7,22 +7,24 @@ interface Ctx {
 
 export async function PUT(req: NextRequest, { params }: Ctx) {
   const { id } = await params
-  const body = await req.json()
-  const supabase = getServiceClient()
-  const { data, error } = await supabase
-    .from('products')
-    .update({ ...body, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-  return NextResponse.json(data)
+  try {
+    const body = await req.json()
+    const data = await db.product.update({
+      where: { id },
+      data: { ...body, updated_at: new Date() },
+    })
+    return NextResponse.json(data)
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 400 })
+  }
 }
 
 export async function DELETE(_: NextRequest, { params }: Ctx) {
   const { id } = await params
-  const supabase = getServiceClient()
-  const { error } = await supabase.from('products').delete().eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-  return NextResponse.json({ success: true })
+  try {
+    await db.product.delete({ where: { id } })
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 400 })
+  }
 }

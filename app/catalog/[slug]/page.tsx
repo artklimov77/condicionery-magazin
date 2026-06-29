@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import OrderForm from '@/components/product/OrderForm'
 import { formatPrice, getAreaLabel, getPowerLabel, getLeadLabel } from '@/lib/utils'
 import type { Product } from '@/lib/types'
@@ -11,12 +11,11 @@ interface PageProps {
 
 async function getProduct(slug: string): Promise<Product | null> {
   try {
-    const { data } = await supabase
-      .from('products')
-      .select('*, category:categories(*)')
-      .eq('slug', slug)
-      .single()
-    return data
+    const data = await db.product.findUnique({
+      where: { slug },
+      include: { category: true },
+    })
+    return data as unknown as Product
   } catch {
     return null
   }
@@ -49,17 +48,23 @@ export default async function ProductPage({ params }: PageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Breadcrumb */}
       <nav className="text-sm text-slate-400 mb-6 flex items-center gap-2">
         <a href="/" className="hover:text-brand-600">Главная</a>
         <span>›</span>
         <a href="/catalog" className="hover:text-brand-600">Каталог</a>
+        {product.category && (
+          <>
+            <span>›</span>
+            <a href={`/catalog?category=${product.category_id}`} className="hover:text-brand-600">
+              {product.category.name}
+            </a>
+          </>
+        )}
         <span>›</span>
         <span className="text-slate-700">{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
-        {/* Image */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 flex items-center justify-center min-h-80">
           {product.images[0] ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -76,10 +81,12 @@ export default async function ProductPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Info */}
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-sm font-semibold text-brand-600">{product.brand}</span>
+            {product.category && (
+              <span className="text-xs text-slate-400 px-2 py-0.5 rounded-md bg-slate-100">{product.category.name}</span>
+            )}
             {product.is_new && (
               <span className="px-2 py-0.5 rounded-md bg-brand-600 text-white text-xs font-semibold">Новинка</span>
             )}
@@ -93,7 +100,6 @@ export default async function ProductPage({ params }: PageProps) {
             <p className="text-sm text-slate-400 mb-4">Арт.: {product.model_number}</p>
           )}
 
-          {/* Key specs */}
           <div className="grid grid-cols-2 gap-3 mb-6">
             {[
               { label: 'Мощность', value: getPowerLabel(product.power_kw) },
@@ -108,7 +114,6 @@ export default async function ProductPage({ params }: PageProps) {
             ))}
           </div>
 
-          {/* Features */}
           <div className="flex flex-wrap gap-2 mb-6">
             {featuresList.map(({ key, label }) =>
               (product as unknown as Record<string, unknown>)[key] ? (
@@ -122,7 +127,6 @@ export default async function ProductPage({ params }: PageProps) {
             )}
           </div>
 
-          {/* Lead time */}
           <div className="flex items-center gap-2 mb-5 text-sm text-slate-500">
             <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" />
@@ -131,7 +135,6 @@ export default async function ProductPage({ params }: PageProps) {
             {getLeadLabel(product.lead_days)}
           </div>
 
-          {/* Price */}
           <div className="mb-6">
             {product.promo_price && (
               <div className="text-slate-400 line-through text-base">{formatPrice(product.price_unit)}</div>
@@ -146,9 +149,7 @@ export default async function ProductPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Description + Order form */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Description & specs */}
         <div>
           {product.description && (
             <div className="mb-8">
@@ -172,7 +173,6 @@ export default async function ProductPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Order form */}
         <div id="order" className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
           <h2 className="text-lg font-bold text-slate-900 mb-1">Оставить заявку</h2>
           <p className="text-sm text-slate-500 mb-6">Менеджер перезвонит в течение часа и уточнит детали</p>

@@ -8,6 +8,7 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
   const currentPrice = product.promo_price ?? product.price_unit
+  const hasPrice = currentPrice > 0
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
@@ -37,6 +38,9 @@ export default function ProductCard({ product }: Props) {
           )}
           {product.promo_price && (
             <span className="px-2 py-0.5 rounded-md bg-red-500 text-white text-xs font-semibold">Акция</span>
+          )}
+          {!hasPrice && (
+            <span className="px-2 py-0.5 rounded-md bg-slate-700 text-white text-xs font-semibold">Цена по запросу</span>
           )}
         </div>
       </Link>
@@ -80,14 +84,21 @@ export default function ProductCard({ product }: Props) {
         <div className="mt-auto">
           {/* Price */}
           <div className="mb-3">
-            {product.promo_price && (
-              <div className="text-xs text-slate-400 line-through">{formatPrice(product.price_unit)}</div>
-            )}
-            <div className="text-xl font-bold text-slate-900">
-              {formatPrice(currentPrice)}
-            </div>
-            {product.price_install > 0 && (
-              <div className="text-xs text-slate-400">+ монтаж {formatPrice(product.price_install)}</div>
+            {hasPrice ? (
+              <>
+                {product.promo_price && (
+                  <div className="text-xs text-slate-400 line-through">{formatPrice(product.price_unit)}</div>
+                )}
+                <div className="text-xl font-bold text-slate-900">{formatPrice(currentPrice)}</div>
+                {product.price_install > 0 && (
+                  <div className="text-xs text-slate-400">+ монтаж {formatPrice(product.price_install)}</div>
+                )}
+              </>
+            ) : (
+              <div>
+                <div className="text-sm font-semibold text-slate-500">Цена по запросу</div>
+                <div className="text-xs text-slate-400 mt-0.5">Уточнит менеджер при звонке</div>
+              </div>
             )}
           </div>
 
@@ -99,12 +110,21 @@ export default function ProductCard({ product }: Props) {
             >
               Подробнее
             </Link>
-            <Link
-              href={`/catalog/${product.slug}#order`}
-              className="flex-1 text-center py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-amber-600 transition-colors"
-            >
-              Заказать
-            </Link>
+            {hasPrice ? (
+              <Link
+                href={`/catalog/${product.slug}#order`}
+                className="flex-1 text-center py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-amber-600 transition-colors"
+              >
+                Заказать
+              </Link>
+            ) : (
+              <a
+                href="tel:+79001234567"
+                className="flex-1 text-center py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors"
+              >
+                Узнать цену
+              </a>
+            )}
           </div>
         </div>
       </div>

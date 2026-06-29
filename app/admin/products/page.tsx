@@ -1,4 +1,4 @@
-import { getServiceClient } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import Link from 'next/link'
 import { formatPrice, getAreaLabel } from '@/lib/utils'
 import type { Product } from '@/lib/types'
@@ -8,11 +8,10 @@ export const metadata: Metadata = { title: 'Товары' }
 
 async function getProducts(): Promise<Product[]> {
   try {
-    const { data } = await getServiceClient()
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false })
-    return data ?? []
+    const data = await db.product.findMany({
+      orderBy: { created_at: 'desc' },
+    })
+    return data as unknown as Product[]
   } catch {
     return []
   }
@@ -41,7 +40,7 @@ export default async function AdminProductsPage() {
           <table className="w-full text-sm">
             <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
-                {['Товар', 'Бренд', 'Площадь', 'Цена', 'Статус', ''].map((h) => (
+                {['Товар', 'Бренд', 'Тип', 'Площадь', 'Цена', 'Статус', ''].map((h) => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                     {h}
                   </th>
@@ -56,6 +55,7 @@ export default async function AdminProductsPage() {
                     <div className="text-xs text-slate-400">{p.model_number}</div>
                   </td>
                   <td className="px-4 py-3 text-slate-600">{p.brand}</td>
+                  <td className="px-4 py-3 text-slate-500 text-xs">{p.product_type}</td>
                   <td className="px-4 py-3 text-slate-500">{getAreaLabel(p)}</td>
                   <td className="px-4 py-3 font-semibold text-slate-900">{formatPrice(p.promo_price ?? p.price_unit)}</td>
                   <td className="px-4 py-3">

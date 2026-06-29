@@ -1,5 +1,6 @@
 import Hero from '@/components/home/Hero'
 import BrandCarousel from '@/components/home/BrandCarousel'
+import EquipmentTypes from '@/components/home/EquipmentTypes'
 import FeaturedProducts from '@/components/home/FeaturedProducts'
 import HowItWorks from '@/components/home/HowItWorks'
 import WhyUs from '@/components/home/WhyUs'
@@ -11,6 +12,7 @@ export default function HomePage() {
     <>
       <Hero />
       <BrandCarousel />
+      <EquipmentTypes />
       <FeaturedProducts />
       <HowItWorks />
       <WhyUs />

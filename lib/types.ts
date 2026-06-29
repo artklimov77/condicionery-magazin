@@ -14,6 +14,7 @@ export interface Product {
   category_id?: string
   category?: Category
   model_number?: string
+  product_type: string
   power_kw: number
   area_min?: number
   area_max: number
@@ -36,13 +37,14 @@ export interface Product {
   is_featured: boolean
   is_new: boolean
   is_promo: boolean
-  created_at: string
-  updated_at: string
+  source_url?: string
+  created_at: string | Date
+  updated_at: string | Date
 }
 
 export interface Order {
   id: string
-  source: 'catalog' | 'product' | 'quiz' | 'contacts'
+  source: string
   product_id?: string
   product_name?: string
   quiz_data?: QuizData
@@ -50,8 +52,8 @@ export interface Order {
   customer_phone: string
   customer_email?: string
   comment?: string
-  status: 'new' | 'in_progress' | 'done' | 'cancelled'
-  created_at: string
+  status: string
+  created_at: string | Date
 }
 
 export interface QuizData {

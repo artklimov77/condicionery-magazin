@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  sort_order  Int       @default(0)
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id               String    @id @default(uuid())
+  name             String
+  slug             String    @unique
+  brand            String
+  category_id      String?
+  category         Category? @relation(fields: [category_id], references: [id])
+  model_number     String?
+  product_type     String    @default("кондиционер")
+
+  power_kw         Float
+  area_min         Int?
+  area_max         Int
+  energy_class     String    @default("A")
+  noise_indoor_db  Int?
+  noise_outdoor_db Int?
+
+  inverter         Boolean   @default(true)
+  wifi             Boolean   @default(false)
+  heating          Boolean   @default(true)
+  air_purifier     Boolean   @default(false)
+  smart_home       Boolean   @default(false)
+
+  price_unit       Int
+  price_install    Int       @default(0)
+  promo_price      Int?
+
+  available        Boolean   @default(true)
+  lead_days        Int       @default(7)
+
+  images           String[]
+  description      String?
+  specs            Json      @default("{}")
+
+  is_featured      Boolean   @default(false)
+  is_new           Boolean   @default(false)
+  is_promo         Boolean   @default(false)
+
+  source_url       String?
+
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  orders           Order[]
+
+  @@map("products")
+}
+
+model Order {
+  id             String   @id @default(uuid())
+  source         String   @default("catalog")
+  product_id     String?
+  product        Product? @relation(fields: [product_id], references: [id])
+  product_name   String?
+  quiz_data      Json?
+  customer_name  String
+  customer_phone String
+  customer_email String?
+  comment        String?
+  status         String   @default("new")
+  created_at     DateTime @default(now())
+
+  @@map("orders")
+}
+
+model Content {
+  key   String @id
+  value String
+  type  String @default("text")
+
+  @@map("content")
+}

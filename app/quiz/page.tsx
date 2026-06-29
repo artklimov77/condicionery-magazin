@@ -3,6 +3,36 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 
+const IconAC = () => (
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <rect x="2" y="7" width="20" height="8" rx="2" />
+    <path strokeLinecap="round" d="M7 15v3M17 15v3" />
+    <circle cx="12" cy="11" r="1.5" fill="currentColor" stroke="none" />
+  </svg>
+)
+
+const IconVent = () => (
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="3" />
+    <path strokeLinecap="round" d="M12 2v4M12 18v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M2 12h4M18 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+  </svg>
+)
+
+const IconHeatPump = () => (
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
+  </svg>
+)
+
+const IconVRF = () => (
+  <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="10" rx="2" />
+    <path strokeLinecap="round" d="M6 14v4M18 14v4M8 9h8" />
+    <circle cx="12" cy="9" r="1" fill="currentColor" stroke="none" />
+  </svg>
+)
+
 const IconApartment = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -74,14 +104,46 @@ interface Option {
 interface Step {
   id: string
   question: string
+  subtitle?: string
   multi?: boolean
   options: Option[]
 }
 
 const steps: Step[] = [
   {
+    id: 'equipment_type',
+    question: 'Что нужно подобрать?',
+    subtitle: 'Выберите тип оборудования — это поможет задать правильные вопросы дальше',
+    options: [
+      {
+        value: 'кондиционер',
+        label: 'Кондиционер',
+        desc: 'Охлаждение и обогрев квартиры, офиса, магазина',
+        icon: <IconAC />,
+      },
+      {
+        value: 'вентиляция',
+        label: 'Вентиляция',
+        desc: 'Приток свежего воздуха, рекуперация, вытяжка',
+        icon: <IconVent />,
+      },
+      {
+        value: 'тепловой насос',
+        label: 'Тепловой насос',
+        desc: 'Отопление и горячая вода с высоким КПД',
+        icon: <IconHeatPump />,
+      },
+      {
+        value: 'vrf система',
+        label: 'VRF / Мультизона',
+        desc: 'Много зон на одном контуре, большой объект',
+        icon: <IconVRF />,
+      },
+    ],
+  },
+  {
     id: 'room_type',
-    question: 'Что будем охлаждать?',
+    question: 'Тип объекта?',
     options: [
       { value: 'apartment', label: 'Квартира', icon: <IconApartment /> },
       { value: 'house', label: 'Загородный дом', icon: <IconHouse /> },
@@ -91,7 +153,7 @@ const steps: Step[] = [
   },
   {
     id: 'area_range',
-    question: 'Какая площадь помещения?',
+    question: 'Площадь помещения?',
     options: [
       { value: 'до 20 м²', label: 'до 20 м²', desc: 'небольшая комната' },
       { value: '20–30 м²', label: '20–30 м²', desc: 'средняя комната' },
@@ -108,11 +170,13 @@ const steps: Step[] = [
       { value: '25 000–40 000 ₽', label: '25–40 тыс. ₽', desc: 'оптимальное соотношение' },
       { value: '40 000–60 000 ₽', label: '40–60 тыс. ₽', desc: 'комфорт-класс' },
       { value: 'от 60 000 ₽', label: 'от 60 000 ₽', desc: 'премиальные бренды' },
+      { value: 'обсудить с менеджером', label: 'Обсудить с менеджером', desc: 'нужен расчёт' },
     ],
   },
   {
     id: 'priorities',
     question: 'Что важно в первую очередь?',
+    subtitle: 'Можно выбрать несколько',
     multi: true,
     options: [
       { value: 'Экономия электроэнергии', label: 'Экономия электроэнергии', icon: <IconBolt /> },
@@ -166,6 +230,7 @@ export default function QuizPage() {
           customer_phone: form.phone,
           source: 'quiz',
           quiz_data: {
+            equipment_type: answers.equipment_type,
             room_type: answers.room_type,
             area_range: answers.area_range,
             budget_range: answers.budget_range,
@@ -205,7 +270,7 @@ export default function QuizPage() {
     <div className="min-h-screen bg-gradient-to-br from-brand-900 to-brand-700 flex items-center justify-center px-4 py-12">
       <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 max-w-xl w-full">
         {/* Progress */}
-        <div className="flex items-center gap-2 mb-8">
+        <div className="flex items-center gap-2 mb-2">
           {steps.map((s, i) => (
             <div
               key={s.id}
@@ -215,18 +280,17 @@ export default function QuizPage() {
             />
           ))}
         </div>
+        <p className="text-xs text-slate-400 mb-6">Шаг {Math.min(step + 1, steps.length)} из {steps.length}</p>
 
         {!isFormStep ? (
           <>
-            <p className="text-xs font-semibold text-brand-600 uppercase tracking-widest mb-2">
-              Шаг {step + 1} из {steps.length}
-            </p>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">{current.question}</h2>
-            {current.multi && (
-              <p className="text-sm text-slate-400 mb-4">Можно выбрать несколько</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">{current.question}</h2>
+            {current.subtitle && (
+              <p className="text-sm text-slate-400 mb-5">{current.subtitle}</p>
             )}
+            {!current.subtitle && <div className="mb-5" />}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <div className={`grid gap-3 mb-6 ${current.options.length > 4 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2'}`}>
               {current.options.map((opt) => (
                 <button
                   key={opt.value}
@@ -300,7 +364,7 @@ export default function QuizPage() {
               />
 
               {status === 'error' && (
-                <p className="text-sm text-red-600">Ошибка отправки. Попробуйте снова.</p>
+                <p className="text-sm text-red-600">Ошибка отправки. Попробуйте снова или позвоните нам.</p>
               )}
 
               <button

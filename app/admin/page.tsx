@@ -1,15 +1,14 @@
-import { getServiceClient } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import Link from 'next/link'
 
 async function getStats() {
   try {
-    const supabase = getServiceClient()
-    const [{ count: totalProducts }, { count: newOrders }, { count: totalOrders }] = await Promise.all([
-      supabase.from('products').select('*', { count: 'exact', head: true }).eq('available', true),
-      supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'new'),
-      supabase.from('orders').select('*', { count: 'exact', head: true }),
+    const [totalProducts, newOrders, totalOrders] = await Promise.all([
+      db.product.count({ where: { available: true } }),
+      db.order.count({ where: { status: 'new' } }),
+      db.order.count(),
     ])
-    return { totalProducts: totalProducts ?? 0, newOrders: newOrders ?? 0, totalOrders: totalOrders ?? 0 }
+    return { totalProducts, newOrders, totalOrders }
   } catch {
     return { totalProducts: 0, newOrders: 0, totalOrders: 0 }
   }

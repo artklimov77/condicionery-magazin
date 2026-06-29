@@ -1,17 +1,15 @@
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import ProductCard from '@/components/catalog/ProductCard'
 import type { Product } from '@/lib/types'
 
 async function getFeaturedProducts(): Promise<Product[]> {
   try {
-    const { data } = await supabase
-      .from('products')
-      .select('*')
-      .eq('available', true)
-      .eq('is_featured', true)
-      .limit(6)
-    return data ?? []
+    const data = await db.product.findMany({
+      where: { available: true, is_featured: true },
+      take: 6,
+    })
+    return data as unknown as Product[]
   } catch {
     return []
   }

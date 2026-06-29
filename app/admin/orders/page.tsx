@@ -1,4 +1,4 @@
-import { getServiceClient } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge'
 import type { Order } from '@/lib/types'
 import type { Metadata } from 'next'
@@ -7,11 +7,12 @@ export const metadata: Metadata = { title: 'Заявки' }
 
 async function getOrders(status?: string): Promise<Order[]> {
   try {
-    const supabase = getServiceClient()
-    let q = supabase.from('orders').select('*').order('created_at', { ascending: false })
-    if (status) q = q.eq('status', status)
-    const { data } = await q.limit(100)
-    return data ?? []
+    const data = await db.order.findMany({
+      where: status ? { status } : undefined,
+      orderBy: { created_at: 'desc' },
+      take: 100,
+    })
+    return data as unknown as Order[]
   } catch {
     return []
   }
@@ -39,7 +40,6 @@ export default async function OrdersPage({ searchParams }: PageProps) {
         <h1 className="text-2xl font-bold text-slate-900">Заявки</h1>
       </div>
 
-      {/* Status tabs */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
         {[undefined, 'new', 'in_progress', 'done', 'cancelled'].map((s) => (
           <a

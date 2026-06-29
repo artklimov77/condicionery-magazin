@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServiceClient } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import { sendOrderEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
@@ -11,11 +11,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Имя и телефон обязательны' }, { status: 400 })
     }
 
-    const supabase = getServiceClient()
-
-    const { data: order, error } = await supabase
-      .from('orders')
-      .insert({
+    const order = await db.order.create({
+      data: {
         customer_name: customer_name.trim(),
         customer_phone: customer_phone.trim(),
         customer_email: customer_email?.trim() || null,
@@ -23,16 +20,12 @@ export async function POST(req: NextRequest) {
         product_id: product_id || null,
         product_name: product_name || null,
         source: source || 'catalog',
-        quiz_data: quiz_data || null,
+        quiz_data: quiz_data || undefined,
         status: 'new',
-      })
-      .select()
-      .single()
+      },
+    })
 
-    if (error) throw error
-
-    // Email уведомление (не блокируем ответ если упадёт)
-    sendOrderEmail(order).catch(console.error)
+    sendOrderEmail(order as unknown as import('@/lib/types').Order).catch(console.error)
 
     return NextResponse.json({ success: true, id: order.id })
   } catch (err) {
