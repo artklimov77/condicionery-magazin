@@ -21,8 +21,8 @@ async function getProducts(filters: Record<string, string>): Promise<Product[]> 
   try {
     const where: Prisma.ProductWhereInput = { available: true }
 
-    if (filters.brand) where.brand = filters.brand
-    if (filters.category) where.category_id = filters.category
+    if (filters.brand) where.brand = { contains: filters.brand, mode: 'insensitive' }
+    if (filters.category) where.category = { slug: filters.category }
     if (filters.product_type) where.product_type = { contains: filters.product_type, mode: 'insensitive' }
     if (filters.area) where.area_max = { lte: Number(filters.area) }
     if (filters.price_max) where.price_unit = { lte: Number(filters.price_max) }
