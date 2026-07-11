@@ -22,7 +22,12 @@ const categories = [
   { label: 'Фанкойлы', href: '/catalog?category=fankoyly' },
 ]
 
-export default function Header() {
+interface Props {
+  phone?: string
+  phoneHref?: string
+}
+
+export default function Header({ phone = '+7 (900) 123-45-67', phoneHref = '+79001234567' }: Props) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -35,11 +40,11 @@ export default function Header() {
             <a href="mailto:info@nordic-air.ru" className="text-blue-200 hover:text-white transition-colors hidden sm:block">
               info@nordic-air.ru
             </a>
-            <a href="tel:+79001234567" className="text-white font-semibold hover:text-blue-200 transition-colors flex items-center gap-1.5">
+            <a href={`tel:${phoneHref}`} className="text-white font-semibold hover:text-blue-200 transition-colors flex items-center gap-1.5">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              +7 (900) 123-45-67
+              {phone}
             </a>
           </div>
         </div>
@@ -70,13 +75,13 @@ export default function Header() {
             {/* CTA */}
             <div className="flex items-center gap-3 flex-shrink-0">
               <a
-                href="tel:+79001234567"
+                href={`tel:${phoneHref}`}
                 className="hidden md:flex items-center gap-2 text-brand-900 font-bold text-base hover:text-brand-600 transition-colors"
               >
                 <svg className="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                +7 (900) 123-45-67
+                {phone}
               </a>
               <Link
                 href="/quiz"
@@ -128,11 +133,11 @@ export default function Header() {
       {open && (
         <div className="lg:hidden bg-white border-t border-slate-100 shadow-lg">
           <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
-            <a href="tel:+79001234567" className="flex items-center gap-2 py-3 px-3 rounded-lg bg-brand-50 text-brand-700 font-bold mb-2">
+            <a href={`tel:${phoneHref}`} className="flex items-center gap-2 py-3 px-3 rounded-lg bg-brand-50 text-brand-700 font-bold mb-2">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              +7 (900) 123-45-67
+              {phone}
             </a>
             {nav.map(({ label, href }) => (
               <Link key={href} href={href} onClick={() => setOpen(false)} className="py-2 px-3 rounded-lg text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-medium">

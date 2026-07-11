@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import FloatingContact from '@/components/common/FloatingContact'
+import { getContent } from '@/lib/cms'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
@@ -13,21 +14,23 @@ export const metadata: Metadata = {
     template: '%s | Nordic Air',
   },
   description: 'Кондиционеры, вентиляция, тепловые насосы, VRF-системы. Подбор, поставка и монтаж под ключ. Работаем напрямую с дистрибьюторами — без посредников.',
-  openGraph: {
-    type: 'website',
-    locale: 'ru_RU',
-    siteName: 'Nordic Air',
-  },
+  openGraph: { type: 'website', locale: 'ru_RU', siteName: 'Nordic Air' },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const content = await getContent()
+
   return (
     <html lang="ru">
       <body className={inter.className}>
-        <Header />
+        <Header phone={content.phone} phoneHref={content.phone_href} />
         <main className="min-h-screen">{children}</main>
-        <Footer />
-        <FloatingContact />
+        <Footer phone={content.phone} phoneHref={content.phone_href} email={content.email_info} />
+        <FloatingContact
+          phone={content.phone}
+          phoneHref={content.phone_href}
+          whatsapp={content.whatsapp}
+        />
       </body>
     </html>
   )
