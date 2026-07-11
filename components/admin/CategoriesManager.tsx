@@ -56,7 +56,7 @@ export default function CategoriesManager({ categories: initial }: Props) {
         setCreating(false)
       } else if (editing) {
         await fetch(`/api/admin/categories/${editing}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-        setCategories(categories.map((c) => c.id === editing ? { ...c, ...body } : c))
+        setCategories(categories.map((c) => c.id === editing ? { ...c, ...body, description: body.description ?? undefined } as CategoryWithCount : c))
         setEditing(null)
       }
     } catch {
