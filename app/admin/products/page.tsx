@@ -5,6 +5,7 @@ import type { Product, Category } from '@/lib/types'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import ProductsTable from '@/components/admin/ProductsTable'
+import { Prisma } from '@prisma/client'
 
 export const metadata: Metadata = { title: 'Товары' }
 
@@ -13,7 +14,7 @@ interface PageProps {
 }
 
 async function getData(filters: Record<string, string>) {
-  const where: Parameters<typeof db.product.findMany>[0]['where'] = {}
+  const where: Prisma.ProductWhereInput = {}
 
   if (filters.q) {
     where.OR = [
