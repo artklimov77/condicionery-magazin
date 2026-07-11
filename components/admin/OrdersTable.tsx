@@ -65,7 +65,7 @@ export default function OrdersTable({ orders: initial }: Props) {
       {orders.map((order) => {
         const cfg = statusConfig[order.status] ?? statusConfig.new
         const isOpen = expanded === order.id
-        const quizData = order.quiz_data as Record<string, unknown> | null
+        const quizData = order.quiz_data as unknown as Record<string, unknown> | null
 
         return (
           <div key={order.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
